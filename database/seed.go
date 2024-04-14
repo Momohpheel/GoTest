@@ -29,9 +29,10 @@ func userSeeder(db *gorm.DB) {
 		}
 
 		userRecord := models.User{
-			FullName: fullname,
-			Email:    email,
-			Password: string(passwordHash),
+			FullName:      fullname,
+			Email:         email,
+			AccountNumber: "11111111111",
+			Password:      string(passwordHash),
 		}
 
 		// pass pointer of data to Create
