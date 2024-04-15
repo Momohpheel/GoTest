@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"net/http"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,26 +22,34 @@ func (s InputRequest) Validate() error {
 
 	return valid
 }
-func ProcessTransaction(c *fiber.Ctx) (InputRequest, error) {
+func ProcessTransaction(c *fiber.Ctx) error {
 	var (
 		input InputRequest
 	)
 
 	if err := c.BodyParser(&input); err != nil {
-		return InputRequest{}, err
+		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 
 	if err := input.Validate(); err != nil {
-		return InputRequest{}, err
+		return c.Status(http.StatusBadRequest).JSON(err)
 	}
 	output := InputRequest{
 		AccountID: input.AccountID,
 		Reference: input.Reference,
 		Amount:    input.Amount,
 	}
-	return output, nil
+	return c.Status(http.StatusAccepted).JSON(output)
 }
 
 func GetTransaction(c *fiber.Ctx) error {
-	return c.JSON("")
+
+	reference := c.Params("ref")
+	output := InputRequest{
+		AccountID: "1111111111",
+		Reference: reference,
+		Amount:    2000000,
+	}
+
+	return c.Status(http.StatusAccepted).JSON(output)
 }

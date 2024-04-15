@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/go-interview/config"
 	"github.com/go-interview/database"
 	"github.com/go-interview/routes"
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +16,7 @@ func main() {
 
 	routes.Routes(app)
 
-	port := config.App.Port
+	port := "4500"
 
 	if err := app.Listen(":" + port); err != nil {
 		panic(err)
