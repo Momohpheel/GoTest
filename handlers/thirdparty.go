@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"github.com/go-interview/database"
-	"github.com/go-interview/helper"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,20 +20,24 @@ func (s InputRequest) Validate() error {
 
 	return valid
 }
-func ProcessTransaction(c *fiber.Ctx) error {
-	db := database.DB
+func ProcessTransaction(c *fiber.Ctx) (InputRequest, error) {
 	var (
 		input InputRequest
 	)
 
 	if err := c.BodyParser(&input); err != nil {
-		return helper.Response(c, err, err.Error(), false, 400)
+		return InputRequest{}, err
 	}
 
 	if err := input.Validate(); err != nil {
-		return helper.Response(c, err, err.Error(), false, 400)
+		return InputRequest{}, err
 	}
-	return c.JSON("")
+	output := InputRequest{
+		AccountID: input.AccountID,
+		Reference: input.Reference,
+		Amount:    input.Amount,
+	}
+	return output, nil
 }
 
 func GetTransaction(c *fiber.Ctx) error {
