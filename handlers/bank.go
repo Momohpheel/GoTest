@@ -61,6 +61,7 @@ func CreateTransaction(c *fiber.Ctx) error {
 		return helper.Response(c, rows.Error, "transaction failed", false, 401)
 	}
 
+	//third party integration
 	response, err := ThirdParty(c, request.ID)
 	if err != nil {
 		return helper.Response(c, rows.Error, "Couldn't create transaction in third-party provider system", false, 401)
