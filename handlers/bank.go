@@ -64,7 +64,7 @@ func CreateTransaction(c *fiber.Ctx) error {
 	//third party integration
 	response, err := ThirdParty(c, request.ID)
 	if err != nil {
-		return helper.Response(c, rows.Error, "Couldn't create transaction in third-party provider system", false, 401)
+		return helper.Response(c, err.Error(), "Couldn't create transaction in third-party provider system", false, 401)
 	}
 
 	return helper.Response(c, response, "transaction successfull", true, 201)
@@ -109,36 +109,37 @@ func ThirdParty(c *fiber.Ctx, id uint) (ThirdPartyResponse, error) {
 
 	jsonReq, err := json.Marshal(request)
 	if err != nil {
-		return ThirdPartyResponse{}, errors.New("Error making a request. %s " + err.Error())
+		return ThirdPartyResponse{}, errors.New("Error making a request -" + err.Error())
 	}
 	client := &http.Client{}
 	responseBody := bytes.NewBuffer(jsonReq)
 
-	req, err := http.NewRequest(http.MethodGet, url, responseBody)
+	req, err := http.NewRequest(http.MethodPost, url, responseBody)
 
 	if err != nil {
-		return ThirdPartyResponse{}, errors.New("Error making a request. %s " + err.Error())
+		return ThirdPartyResponse{}, errors.New("Error making a request 1- " + err.Error())
 	}
 
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return ThirdPartyResponse{}, errors.New("Error making a request. %s " + err.Error())
+		return ThirdPartyResponse{}, errors.New("Error making a request 2- " + err.Error())
 	}
 	defer resp.Body.Close()
 
 	bodyByte, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return ThirdPartyResponse{}, errors.New("Error making a request. %s " + err.Error())
+		return ThirdPartyResponse{}, errors.New("Error making a request 3- " + err.Error())
 	}
 
+	//return ThirdPartyResponse{}, errors.New(string(bodyByte))
 	var res ThirdPartyResponse
 	errs := json.Unmarshal(bodyByte, &res)
 
 	if errs != nil {
-		return ThirdPartyResponse{}, errors.New("Error making a request. %s " + errs.Error())
+		return ThirdPartyResponse{}, errors.New("Error making a request 4- " + errs.Error())
 	}
 
 	if len(res.Reference) > 1 {

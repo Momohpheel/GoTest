@@ -8,7 +8,7 @@ import (
 )
 
 type InputRequest struct {
-	AccountID string `json:"account_id"`
+	AccountID uint   `json:"account_id"`
 	Reference string `json:"reference"`
 	Amount    uint   `json:"amount"`
 }
@@ -39,14 +39,14 @@ func ProcessTransaction(c *fiber.Ctx) error {
 		Reference: input.Reference,
 		Amount:    input.Amount,
 	}
-	return c.Status(http.StatusAccepted).JSON(output)
+	return c.Status(http.StatusOK).JSON(output)
 }
 
 func GetTransaction(c *fiber.Ctx) error {
 
 	reference := c.Params("ref")
 	output := InputRequest{
-		AccountID: "1111111111",
+		AccountID: 1111111111,
 		Reference: reference,
 		Amount:    2000000,
 	}
